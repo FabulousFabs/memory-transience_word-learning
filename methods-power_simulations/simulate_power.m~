@@ -77,28 +77,25 @@ new_data1 = squeeze(new_data1);
 new_data3 = squeeze(new_data3);
 new_data2(:, :) = squeeze(mean(new_data1(:, :, :), 1)); % cond1
 new_data4(:, :) = squeeze(mean(new_data3(:, :, :), 1)); % cond2
+ni2_topoplot(sensors, new_data4(:, 500) - new_data2(:, 500)); colorbar;
 
 new_data5(:) = squeeze(mean(new_data2(:, :), 1)); % avg over channels
 new_data6(:) = squeeze(mean(new_data4(:, :), 1)); % avg over channels
 
-chandata1 = sqrt((new_data2(:,:) - mean(new_data2(:,:), 1)) .^ 2 / size(chandata, 1)); % GMFP(t)
-chandata2 = sqrt((new_data4(:,:) - mean(new_data4(:,:), 1)) .^ 2 / size(chandata, 1)); % GMFP(t)
-erpdata = squeeze(mean(chandata2, 1)) - squeeze(mean(chandata1, 1));
-erpdata_all = chandata2 - chandata1;
-
-ni2_topoplot(sensors, erpdata_all(:, 500)); colorbar;
+figure; hold on;
+plot(timecourse(300:600), new_data6(300:600) - new_data5(300:600), 'black-');
+plot(timecourse(300:600), new_data5(300:600), 'r-');
+plot(timecourse(300:600), new_data6(300:600), 'g-');
 
 figure;
-plot(timecourse(300:600), erpdata(300:600), 'black-');
-xlabel("Time (s)"); ylabel("ERP"); title("ERP plot");
-
-figure;
+%chandata = new_data4(:,:) - new_data2(:,:);
+chandata = new_data4(:,:);
 subplot(1, 2, 1);
-plot(timecourse(300:600), (chandata1(:, 300:600) .* 10e5 + repmat(linspace(1, size(chandata1, 1) .* 100, size(chandata1, 1)), 301, 1)'));
-xlabel("Time (s)"); ylabel("Signal (mV)"); title("Condition 1 plot by electrode");
-subplot(1, 2, 2);
-plot(timecourse(300:600), (chandata2(:, 300:600) .* 10e5 + repmat(linspace(1, size(chandata2, 1) .* 100, size(chandata2, 1)), 301, 1)'));
+plot(timecourse(300:600), (chandata(:, 300:600) .* 10e3 + repmat(linspace(1, size(chandata, 1) .* 20, size(chandata, 1)), 301, 1)'));
+axis([0.3 0.6 -50 1900]);
 xlabel("Time (s)"); ylabel("Signal (mV)"); title("Condition 2 plot by electrode");
+
+
 
 
 %% permutation-based stats to get an estimate of our power
