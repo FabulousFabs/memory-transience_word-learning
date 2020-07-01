@@ -14,12 +14,13 @@ baseline = 1; % condition1 amplitude
 baseline_var = [-0.15 0.15]; % variation of condition1 amplitude
 effect_size = 1.5; % condition2 amplitude
 effect_var = [-0.25 0.25]; % variation of condition2 amplitude
+latency = 0.5;
+latency_var = [-0.05 0.05];
 
 % i'm using ni2 functions for convenience here because they do pretty much
 % exactly what i need so I can avoid more direct ft_* calls (and some
 % general refactoring), thanks to Jan-Mathijs Schoffelen
 
-[data, timecourse] = ni2_activation('frequency', 5.5); % theta is were we expect the activity differences to be apparent
 sensors = ni2_sensors('type', 'eeg');
 headmodel = ni2_headmodel('type', 'spherical', 'nshell', 3);
 
@@ -48,6 +49,8 @@ for i = 1:n_samples
         c1_mod = baseline + (baseline_var(randi([1 2], 1)) * rand());
         dipmom1 = [c1_mod 0 c1_mod];
         leadfield1 = lf.leadfield{1} * dipmom1';
+        l = latency + (latency_var(randi([1 2], 1)) * rand());
+        [data, timecourse] = ni2_activation('frequency', 5.5, 'latency', l); % theta is where we expect the activity differences to be apparent
         sensordata_c1(i, k, :, :) = leadfield1 * data + (randn(size(leadfield1, 1), size(data, 2)) * 1e-3);
         
         % condition 2
@@ -65,11 +68,13 @@ save('/users/fabianschneider/desktop/university/master/dissertation/proposal/cod
 %% some super basic ERP tests just to verify
 clearvars; close all;
 load('/users/fabianschneider/desktop/university/master/dissertation/proposal/code/methods-power_simulations/mt_data.mat');
+sensors = ni2_sensors('type', 'eeg');
 
 for part = 1:size(sensordata_c1, 1)
     new_data1(part, 1, :, :) = mean(sensordata_c1(part, :, :, :), 2);
     new_data3(part, 1, :, :) = mean(sensordata_c2(part, :, :, :), 2);
 end
+
 new_data1 = squeeze(new_data1);
 new_data3 = squeeze(new_data3);
 new_data2(:, :) = squeeze(mean(new_data1(:, :, :), 1)); % cond1
@@ -80,8 +85,9 @@ new_data5(:) = squeeze(mean(new_data2(:, :), 1)); % avg over channels
 new_data6(:) = squeeze(mean(new_data4(:, :), 1)); % avg over channels
 
 figure; hold on;
+plot(timecourse(300:600), new_data6(300:600) - new_data5(300:600), 'black-');
 plot(timecourse(300:600), new_data5(300:600), 'r-');
-plot(timecourse(300:600), new_data6(300:600), 'b-');
+plot(timecourse(300:600), new_data6(300:600), 'g-');
 
 %% permutation-based stats to get an estimate of our power
 clearvars; close all;
