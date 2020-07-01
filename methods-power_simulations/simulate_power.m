@@ -57,6 +57,7 @@ for i = 1:n_samples
         c2_mod = effect_size + (effect_var(randi([1 2], 1)) * rand());
         dipmom2 = [c2_mod 0 c2_mod];
         leadfield2 = lf.leadfield{1} * dipmom2';
+        [data, timecourse] = ni2_activation('frequency', 5.5, 'latency', l); % theta is where we expect the activity differences to be apparent
         sensordata_c2(i, k, :, :) = leadfield2 * data + (randn(size(leadfield2, 1), size(data, 2)) * 1e-3);
     end
 end
