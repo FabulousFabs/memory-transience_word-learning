@@ -288,17 +288,25 @@ ni2_topoplot(sensors, erpdata_all(:, 450)); colorbar;
 ni2_topomovie(sensors, chandata1, timecourse);
 ni2_topomovie(sensors, chandata2, timecourse);
 
-ni2_topoplot(sensors, chandata1(:, 20)); colorbar; title("Superior olivary nucleus peak, t(20)"); % SON peak
-ni2_topoplot(sensors, chandata1(:, 40)); colorbar; title("Inferior colliculus peak, t(40)"); % IC peak
-ni2_topoplot(sensors, chandata1(:, 100)); colorbar; title("Medial geniculate nucleus peak, t(100)"); % MGN peak
-ni2_topoplot(sensors, chandata1(:, 180)); colorbar; title("Thalamus peak, t(180)"); % T peak
-ni2_topoplot(sensors, chandata1(:, 250)); colorbar; title("Heschl's peak, t(250)"); % HG peak
-ni2_topoplot(sensors, chandata1(:, 300)); colorbar; title("Pars triangularis peak, t(300)"); % PT peak
-ni2_topoplot(sensors, chandata1(:, 350)); colorbar; title("Hippocampus peak, t(350)"); % HC peak
+ni2_topoplot(sensors, chandata1(:, 20)); colorbar; title("C1: Superior olivary nucleus peak, t(20)"); % SON peak
+ni2_topoplot(sensors, chandata1(:, 40)); colorbar; title("C1: Inferior colliculus peak, t(40)"); % IC peak
+ni2_topoplot(sensors, chandata1(:, 100)); colorbar; title("C1: Medial geniculate nucleus peak, t(100)"); % MGN peak
+ni2_topoplot(sensors, chandata1(:, 180)); colorbar; title("C1: Thalamus peak, t(180)"); % T peak
+ni2_topoplot(sensors, chandata1(:, 250)); colorbar; title("C1: Heschl's peak, t(250)"); % HG peak
+ni2_topoplot(sensors, chandata1(:, 300)); colorbar; title("C1: Pars triangularis peak, t(300)"); % PT peak
+ni2_topoplot(sensors, chandata1(:, 350)); colorbar; title("C1: Hippocampus peak, t(350)"); % HC peak
+
+ni2_topoplot(sensors, chandata2(:, 20)); colorbar; title("C2: Superior olivary nucleus peak, t(20)"); % SON peak
+ni2_topoplot(sensors, chandata2(:, 40)); colorbar; title("C2: Inferior colliculus peak, t(40)"); % IC peak
+ni2_topoplot(sensors, chandata2(:, 100)); colorbar; title("C2: Medial geniculate nucleus peak, t(100)"); % MGN peak
+ni2_topoplot(sensors, chandata2(:, 180)); colorbar; title("C2: Thalamus peak, t(180)"); % T peak
+ni2_topoplot(sensors, chandata2(:, 250)); colorbar; title("C2: Heschl's peak, t(250)"); % HG peak
+ni2_topoplot(sensors, chandata2(:, 300)); colorbar; title("C2: Pars triangularis peak, t(300)"); % PT peak
+ni2_topoplot(sensors, chandata2(:, 350)); colorbar; title("C2: Hippocampus peak, t(350)"); % HC peak
 
 
 figure;
-plot(timecourse(300:600), erpdata(300:600), 'black-');
+plot(timecourse(1:600), erpdata(1:600), 'black-');
 xlabel("Time (s)"); ylabel("ERP"); title("ERP plot");
 
 figure;
