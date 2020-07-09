@@ -71,7 +71,7 @@ title("Mean constant-Q spectrogram");
 saveas(gcf, strcat(out, "group_mean.png"));
 
 %% k-means
-X_k_clusters = 10;
+X_k_clusters = 5;
 X_k_m = reshape(X, [size(X, 1) * size(X, 2), size(X, 3)]);
 X_k_m = log(abs(X_k_m) .^ 2);
 [X_k_idx, X_k_C] = kmeans(X_k_m, X_k_clusters, 'MaxIter', 1000);
@@ -81,10 +81,11 @@ figure;
 surf(t, f_e, X_k_idx_select, 'EdgeColor', 'None');
 view(2);
 axis([1 size(X_k_idx_select, 2) 0 max(f_e)]);
+c = colorbar;
 ylabel("Frequency (kHz)");
 xlabel("Time (ms)");
+ylabel(c, "K-Means Cluster");
 title("Raw k-means cluster view");
-saveas(gcf, strcat(out, "group_mean_cluster.png"));
 
 X_k_m_transform = X_e + abs(min(min(X_e)));
 X_k_m_transform = X_k_m_transform ./ max(max(X_k_m_transform));
@@ -114,8 +115,8 @@ axis([1 size(X_k_m_transform, 2) 0 max(f_e)]);
 c_ti = linspace(1, max(max(X_k_m_transform)), X_k_clusters);
 c_tl = arrayfun(@(x) ('Cluster ' + string(x)), 1:X_k_clusters);
 c = colorbar('Ticks', c_ti, 'TickLabels', c_tl, 'Limits', [1 max(max(X_k_m_transform)) + 1]);
+colormap('
 ylabel("Frequency (kHz)");
 xlabel("Time (ms)");
-ylabel(c, "K-Means Cluster with scaling normalised energy");
+ylabel(c, "K-Means Cluster + normalised energy");
 title("Clustered and scaled constant-Q spectrogram");
-saveas(gcf, strcat(out, "group_mean_cluster_scaled.png"));
