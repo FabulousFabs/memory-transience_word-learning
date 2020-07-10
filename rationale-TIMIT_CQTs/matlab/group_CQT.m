@@ -119,3 +119,46 @@ xlabel("Time (ms)");
 ylabel(c, "K-Means Cluster with scaling normalised energy");
 title("Clustered and scaled constant-Q spectrogram");
 saveas(gcf, strcat(out, "group_mean_cluster_scaled.png"));
+
+%% within group differences by pixel in cluster
+clear X_k_cluster_spectral;
+
+for i = 1:length(X_k_cluster_I)
+    [X_k_cluster_r, X_k_cluster_c] = find(X_k_idx_select == i);
+    X_k_cluster_spectral(i,:,:) = zeros(size(X_e, 1) * size(X_e, 2), size(X, 3));
+    for j = 1:length(X_k_cluster_r)
+        cluster_data = squeeze(X(X_k_cluster_r(j), X_k_cluster_c(j), :));
+        cluster_data = log(abs(cluster_data) .^ 2);
+        X_k_cluster_spectral(i, j, :) = cluster_data;
+    end
+end
+
+X_k_cluster_spectral = reshape(X_k_cluster_spectral, [length(X_k_cluster_I), size(X_k_cluster_spectral, 2) * size(X_k_cluster_spectral, 3)]);
+
+for i = 1:size(X_k_cluster_spectral, 1)
+    test_data = nonzeros(X_k_cluster_spectral(i,:))';
+    [X_k_cluster_ttest_h(i), X_k_cluster_ttest_p(i), X_k_cluster_ttest_ci(i,:), X_k_cluster_ttest_stats(i,:)] = ttest(test_data, 0, 'Alpha', (0.05 / size(X_k_cluster_spectral, 1)));
+end
+
+%% within group differences by clusters
+clear X_k_cluster_spectral;
+
+for i = 1:length(X_k_cluster_I)
+    [X_k_cluster_r, X_k_cluster_c] = find(X_k_idx_select == i);
+    X_k_cluster_spectral(i,:,:) = zeros(size(X_e, 1) * size(X_e, 2), size(X, 3));
+    for j = 1:length(X_k_cluster_r)
+        cluster_data = squeeze(X(X_k_cluster_r(j), X_k_cluster_c(j), :));
+        cluster_data = log(abs(cluster_data) .^ 2);
+        X_k_cluster_spectral(i, j, :) = cluster_data;
+    end
+end
+
+for i = 1:size(X_k_cluster_spectral, 1)
+    for j = 1:size(X_k_cluster_spectral, 3)
+        X_k_cluster_spectral_m(i, j) = mean(nonzeros(X_k_cluster_spectral(i, :, j)));
+    end
+end
+
+for i = 1:size(X_k_cluster_spectral, 1)
+    [X_k_cluster_m_ttest_h(i), X_k_cluster_m_ttest_p(i), X_k_cluster_m_ttest_ci(i,:), X_k_cluster_m_ttest_stats(i,:)] = ttest(X_k_cluster_spectral_m(i, :), 0, 'Alpha', (0.05 / size(X_k_cluster_spectral, 1)));
+end
