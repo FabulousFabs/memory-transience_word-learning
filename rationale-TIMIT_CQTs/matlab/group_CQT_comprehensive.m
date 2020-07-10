@@ -64,14 +64,14 @@ surf(t, f_e, X_e, 'EdgeColor', 'None');
 view(2);
 axis([1 size(X_e, 2) 0 max(f_e)]);
 c = colorbar;
-ylabel("Frequency (kHz)");
+ylabel("Frequency (Hz)");
 xlabel("Time (ms)");
 ylabel(c, "dB");
 title("Mean constant-Q spectrogram");
 saveas(gcf, strcat(out, "group_mean.png"));
 
 %% group mean PCA
-[PCA_M_coeff, PCA_M_score, PCA_M_latent, PCA_M_ts, PCA_M_e, PCA_M_mu] = pca(X_e);
+%[PCA_M_coeff, PCA_M_score, PCA_M_latent, PCA_M_ts, PCA_M_e, PCA_M_mu] = pca(X_e);
 
 %% individual spectrograms
 figure;
@@ -108,7 +108,7 @@ view(2);
 axis([1 size(test_cqt, 2) 0 max(f_e)]);
 c = colorbar;
 colormap jet;
-ylabel("Frequency (kHz)");
+ylabel("Frequency (Hz)");
 xlabel("Time (ms)");
 ylabel(c, "dB");
 title("Standard deviation of constant-Q spectrogram");
@@ -118,7 +118,7 @@ saveas(gcf, strcat(out, "group_variance.png"));
 X_var_s = sqrt(((X_se - X_ee) .^ 2) ./ 2);
 
 figure;
-title("Deviance spectrograms by speaker");
+title("Deviation spectrograms by speaker");
 
 plot_y = 10;
 plot_x = ceil(size(M, 2) / 10);
@@ -133,7 +133,7 @@ for i = 1:size(M, 2)
     c = colorbar;
     colormap jet;
     caxis([0 12]);
-    ylabel("Frequency (kHz)");
+    ylabel("Frequency (Hz)");
     xlabel("Time (ms)");
     ylabel(c, "dB");
     title("Speaker_{" + string(i) + "}");
