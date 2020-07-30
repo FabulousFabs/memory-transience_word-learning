@@ -316,8 +316,3 @@ xlabel("Time (s)"); ylabel("Signal (mV)"); title("Condition 1 plot by electrode"
 subplot(1, 2, 2);
 plot(timecourse(300:600), (chandata2(:, 300:600) .* 10e5 + repmat(linspace(1, size(chandata2, 1) .* 100, size(chandata2, 1)), 301, 1)'));
 xlabel("Time (s)"); ylabel("Signal (mV)"); title("Condition 2 plot by electrode");
-
-
-%% permutation-based stats to get an estimate of our power
-clearvars; close all;
-load('/users/fabianschneider/desktop/university/master/dissertation/proposal/code/methods-power_simulations/mt_data.mat');
