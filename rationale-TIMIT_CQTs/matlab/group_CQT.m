@@ -71,7 +71,7 @@ title("Mean constant-Q spectrogram");
 saveas(gcf, strcat(out, "group_mean.png"));
 
 %% k-means
-X_k_clusters = 5;
+X_k_clusters = 10;
 X_k_m = reshape(X, [size(X, 1) * size(X, 2), size(X, 3)]);
 X_k_m = log(abs(X_k_m) .^ 2);
 [X_k_idx, X_k_C] = kmeans(X_k_m, X_k_clusters, 'MaxIter', 1000);
@@ -162,3 +162,62 @@ end
 for i = 1:size(X_k_cluster_spectral, 1)
     [X_k_cluster_m_ttest_h(i), X_k_cluster_m_ttest_p(i), X_k_cluster_m_ttest_ci(i,:), X_k_cluster_m_ttest_stats(i,:)] = ttest(X_k_cluster_spectral_m(i, :), 0, 'Alpha', (0.05 / size(X_k_cluster_spectral, 1)));
 end
+
+%% time plots
+da = X_k_cluster_spectral_m(:, 1:3);
+%das(:, 1) = da(:, 1);
+%das(:, 2) = da(:, 2);
+%das(:, 3) = da(:, 3);
+das(:, 1) = da(randperm(size(da, 1)), 1);
+das(:, 2) = da(randperm(size(da, 1)), 2);
+das(:, 3) = da(randperm(size(da, 1)), 3);
+
+figure; hold on;
+c = polyfit([1:size(das, 1)]', das(:, 1), 9);
+y_est = polyval(c, 1:size(das, 1));
+e1 = (sum((y_est' - das(:, 1)) .^ 2) + sum((y_est' - das(:, 2)) .^ 2) + sum((y_est' - das(:, 3)) .^ 2)) ./ size(das, 1);
+e1t = (((y_est' - das(:, 1)) .^ 2) + ((y_est' - das(:, 2)) .^ 2) + ((y_est' - das(:, 3)) .^ 2)) ./ size(das, 1);
+%plot(1:size(das, 1), y_est, 'black-');
+errorbar(1:size(das, 1), y_est, e1t);
+plot(1:size(das, 1), das(:, 1), 'r*');
+plot(1:size(das, 1), das(:, 2), 'b*');
+plot(1:size(das, 1), das(:, 3), 'm*');
+xlabel("Time-frequency clusters");
+ylabel("Spectral energy");
+legend("Regression fit", "Speaker_1", "Speaker_2 (novel)", "Speaker_3 (novel)");
+title("Overfit model (\epsilon = " + string(e1) + ")");
+axis([1 10 -40 -5]);
+
+
+figure; hold on;
+c2 = polyfit([1:size(das, 1)]', das(:, 1), 1);
+y_est2 = polyval(c2, 1:size(das, 1));
+e2 = (sum((y_est2' - das(:, 1)) .^ 2) + sum((y_est2' - das(:, 2)) .^ 2) + sum((y_est2' - das(:, 3)) .^ 2)) ./ size(das, 1);
+e2t = (((y_est2' - das(:, 1)) .^ 2) + ((y_est2' - das(:, 2)) .^ 2) + ((y_est2' - das(:, 3)) .^ 2)) ./ size(das, 1);
+%plot(1:size(das, 1), y_est2, 'black-');
+errorbar(1:size(das, 1), y_est2, e2t);
+plot(1:size(das, 1), das(:, 1), 'r*');
+plot(1:size(das, 1), das(:, 2), 'b*');
+plot(1:size(das, 1), das(:, 3), 'm*');
+xlabel("Time-frequency clusters");
+ylabel("Spectral energy");
+legend("Regression fit", "Speaker_1", "Speaker_2 (novel)", "Speaker_3 (novel)");
+title("Simple model (\epsilon = " + string(e2) + ")");
+axis([1 10 -40 -5]);
+
+figure; hold on;
+b = (1:size(das, 1))' ./ (1:size(das, 1))';
+betas = b \ das(:, 1);
+y_est3 = (b * betas)';
+e3i = das(:, 1) - y_est3';
+e3 = (sum((y_est3' - das(:, 1)) .^ 2) + sum((y_est3' - das(:, 2)) .^ 2) + sum((y_est3' - das(:, 3)) .^ 2)) ./ size(das, 1);
+e3t = (((y_est3' - das(:, 1)) .^ 2) + ((y_est3' - das(:, 2)) .^ 2) + ((y_est3' - das(:, 3)) .^ 2)) ./ size(das, 1);
+errorbar(1:size(das, 1), y_est3, e3t);
+plot(1:size(das, 1), das(:, 1), 'r*');
+plot(1:size(das, 1), das(:, 2), 'b*');
+plot(1:size(das, 1), das(:, 3), 'm*');
+xlabel("Time-frequency clusters");
+ylabel("Spectral energy");
+legend("Regression fit", "Speaker_1", "Speaker_2 (novel)", "Speaker_3 (novel)");
+title("Simple GLM (\epsilon = " + string(e3) + ")");
+axis([1 10 -40 -5]);

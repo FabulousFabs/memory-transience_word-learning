@@ -8,6 +8,7 @@ clearvars; close all;
 %% settings
 targets = "/users/fabianschneider/desktop/university/master/dissertation/proposal/code/rationale-TIMIT_CQTs/data/converted/"; % the folder with all our converted data we want to include in the TFR
 out = "/users/fabianschneider/desktop/university/master/dissertation/proposal/code/rationale-TIMIT_CQTs/matlab/export/";
+individuals = "individuals/";
 screen_x = 2560;
 screen_y = 1600;
 
@@ -50,6 +51,14 @@ X = zeros(dimensions_mn(1), dimensions_mn(2), size(M, 2));
 
 for i = 1:size(M, 2)
     X(:,:,i) = cqt(M(:,i), 'SamplingFrequency', Fs);
+    
+    figure;
+    cqt(M(:,i), 'SamplingFrequency', Fs);
+    axis([0 size(test_cqt, 2) 0 8]);
+    caxis([-140 -40]);
+    title("Constant-Q transform for speaker_{" + string(i) + "}");
+    out_this = strcat(strcat(out, individuals), "spkr" + string(i) + ".png");
+    saveas(gcf, out_this);
 end
 
 X_m = abs(mean(X, 3));
